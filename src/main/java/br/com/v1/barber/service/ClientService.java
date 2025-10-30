@@ -1,29 +1,23 @@
 package br.com.v1.barber.service;
 
 import br.com.v1.barber.domain.Client;
+import br.com.v1.barber.dto.clientDto.ClientCreationDto;
+import br.com.v1.barber.dto.clientDto.ClientDto;
+import br.com.v1.barber.dto.clientDto.ClientUpdateDto;
 import br.com.v1.barber.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
-public class ClientService {
+public interface ClientService {
 
-    private final ClientRepository repository;
+    public Client findClientById (String id);
+    public List<ClientDto> getAllClients();
+    public ClientDto createClient(ClientCreationDto clientCreationDto);
+    public void deleteClient (String id);
+    public ClientDto updateClient (String id, ClientUpdateDto clientUpdateDto);
 
-    public ClientService(ClientRepository repository) {
-        this.repository = repository;
-    }
-
-    public List<Client> getAllClients(){
-        return repository.findAll();
-    }
-    public Client createClient(Client client) {
-        return repository.save(client);
-    }
-
-    public void deleteClient (String id){
-        repository.deleteById(id);
-    }
 }
