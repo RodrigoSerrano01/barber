@@ -28,6 +28,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.0'
+	implementation 'org.hibernate.validator:hibernate-validator:8.0.3.Final'
+	implementation 'org.glassfish:jakarta.el:4.0.2'
+
 }
 
 tasks.named('test') {

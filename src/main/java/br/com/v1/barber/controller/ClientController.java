@@ -6,6 +6,7 @@ import br.com.v1.barber.dto.clientDto.ClientCreationDto;
 import br.com.v1.barber.dto.clientDto.ClientDto;
 import br.com.v1.barber.dto.clientDto.ClientUpdateDto;
 import br.com.v1.barber.service.impl.ClientServerImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class ClientController extends RootController{
 
     @PostMapping(path ="/clients/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public ClientDto createClient (@RequestBody ClientCreationDto client){
+    public ClientDto createClient (@Valid @RequestBody ClientCreationDto client){
         return service.createClient(client);
     }
 
@@ -38,7 +39,7 @@ public class ClientController extends RootController{
     }
 
     @PutMapping("clients/{id}/update")
-    public ClientDto updadteClient (@PathVariable String id, @RequestBody ClientUpdateDto updatedClient){
+    public ClientDto updadteClient ( @PathVariable String id,@Valid @RequestBody ClientUpdateDto updatedClient){
         return service.updateClient(id, updatedClient);
     }
 

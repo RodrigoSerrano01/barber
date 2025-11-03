@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+
     public class ClientUpdateDto extends UserUpdateDto {
 
 }

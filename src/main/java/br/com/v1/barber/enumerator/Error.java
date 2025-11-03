@@ -11,11 +11,12 @@ import lombok.Getter;
 public enum Error {
 
     NO_CLIENT_FOUND("NO_CLIENT_FOUND", "No CLIENT were found."),
+
     NO_CLIENT_FOUND_BY_ID("NO_CLIENT_FOUND_BY_ID", "No CLIENT was found by ID."),
     NO_CLIENT_FOUND_BY_FIRST_AND_LAST_NAME("NO_CLIENT_FOUND_BY_FIRST_AND_LAST_NAME",
             "No CLIENT was found by first and last name."),
     CLIENT_ALREADY_EXISTS("CLIENT_ALREADY_EXISTS", "CLIENT already exists."),
-
+    CLIENT_ALREADY_REGISTERED("CLIENT_ALREADY_REGISTERED", "Client is already registered."),
 
     NO_SERVICE_FOUND("NO_SERVICE_FOUND", "No SERVICE were found."),
     NO_SERVICE_FOUND_BY_ID("NO_SERVICE_FOUND_BY_ID", "No SERVICE was found by ID."),
