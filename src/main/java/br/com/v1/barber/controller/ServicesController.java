@@ -26,7 +26,7 @@ public class ServicesController extends RootController{
 
     @PostMapping(path ="services/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public ServicesDto createServices (@RequestBody ServicesCreationDto servicesCreationDto){
+    public ServicesDto createServices (@Valid @RequestBody ServicesCreationDto servicesCreationDto){
         return serviceImpl.createServices(servicesCreationDto);
     }
 
