@@ -15,15 +15,6 @@ Projeto em desenvolvimento com foco no CRUD de **Clientes, Usuários e Serviços
 
 ---
 
-## Objetivos da Primeira Semana
-- Criar entidades **Clientes, Usuários e Serviços**  
-- Implementar **CRUD completo** para cada entidade  
-- Adicionar **validações básicas**  
-- Criar **DTOs, Services, Impl e Exceptions**  
-- Testar os endpoints via **Postman**  
-
----
-
 ## Tecnologias
 ![Java](https://img.shields.io/badge/Java-17-informational?logo=java&logoColor=white)  
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.7-informational?logo=spring&logoColor=white)  
