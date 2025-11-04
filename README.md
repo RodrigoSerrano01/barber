@@ -1,4 +1,4 @@
-# Barbearia App
+# Barber App
 
 **Barbearia App** é um projeto de portfólio desenvolvido para demonstrar habilidades em **Java**, **Spring Boot**, **MongoDB**, **Docker** e integração com frontend via **React**.  
 
