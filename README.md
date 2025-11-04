@@ -1,6 +1,6 @@
 # Barber App
 
-**Barbearia App** é um projeto de portfólio desenvolvido para demonstrar habilidades em **Java**, **Spring Boot**, **MongoDB**, **Docker** e integração com frontend via **React**.  
+**Barber App** é um projeto de portfólio desenvolvido para demonstrar habilidades em **Java**, **Spring Boot**, **MongoDB**, **Docker** e integração com frontend via **React**.  
 
 O objetivo do projeto é criar um sistema funcional de gerenciamento de barbearia, permitindo o cadastro e gerenciamento de **Clientes, Usuários, Serviços** e **Agendamentos**, com CRUD completo, validações básicas e testes via **Postman**.  
 
