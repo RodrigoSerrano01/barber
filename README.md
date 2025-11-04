@@ -26,7 +26,7 @@ Projeto em desenvolvimento com foco no CRUD de **Clientes, Usuários e Serviços
 
 ## Cronograma do Projeto
 
-### Semana 1: Backend inicial
+### Semana 1: Backend inicial (CONCLUIDO)
 - Criar entidades: **Clientes, Usuários e Serviços**  
 - Implementar **CRUD completo** para cada entidade  
 - Adicionar **validações básicas**  
@@ -72,7 +72,7 @@ Projeto em desenvolvimento com foco no CRUD de **Clientes, Usuários e Serviços
 
 ---
 
-### Semana 5: Deploy e finalização (opcional)
+### Semana 5: Deploy e finalização
 - Deploy do backend (Heroku ou outro)  
 - Deploy do frontend (Vercel, Netlify)  
 - Teste completo online do sistema  
