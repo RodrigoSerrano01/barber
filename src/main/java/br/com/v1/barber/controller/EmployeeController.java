@@ -8,6 +8,7 @@ import br.com.v1.barber.dto.employeeDto.EmployeeCreationDto;
 import br.com.v1.barber.dto.employeeDto.EmployeeDto;
 import br.com.v1.barber.dto.employeeDto.EmployeeUpdateDto;
 import br.com.v1.barber.service.impl.EmployeeServiceImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class EmployeeController extends RootController{
 
     @PostMapping(path ="/employee/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public EmployeeDto createEmployee (@RequestBody EmployeeCreationDto employeeCreationDto){
+    public EmployeeDto createEmployee (@Valid @RequestBody EmployeeCreationDto employeeCreationDto){
         return employeeServiceImpl.createEmployee(employeeCreationDto);
     }
 
@@ -41,7 +42,7 @@ public class EmployeeController extends RootController{
     }
 
     @PutMapping("employee/{id}/update")
-    public EmployeeDto updadteEmployee (@PathVariable String id, @RequestBody EmployeeUpdateDto employeeUpdateDto){
+    public EmployeeDto updadteEmployee (@PathVariable String id,@Valid @RequestBody EmployeeUpdateDto employeeUpdateDto){
         return employeeServiceImpl.updateEmployee(id, employeeUpdateDto);
     }
 

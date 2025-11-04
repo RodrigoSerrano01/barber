@@ -25,7 +25,8 @@ public enum Error {
 
     NO_EMPLOYEE_FOUND("NO_EMPLOYEE_FOUND", "No EMPLOYEE were found."),
     NO_EMPLOYEE_FOUND_BY_ID("NO_EMPLOYEE_FOUND_BY_ID", "No EMPLOYEE was found by ID."),
-    EMPLOYEE_ALREADY_EXISTS("EMPLOYEE_ALREADY_EXISTS", "EMPLOYEE already exists."),;
+    EMPLOYEE_ALREADY_EXISTS("EMPLOYEE_ALREADY_EXISTS", "EMPLOYEE already registered."),
+    EMPLOYEE_ALREADY_REGISTERED("EMPLOYEE_ALREADY_REGISTERED", "EMPLOYEE already registered."),;
 
     private final String errorMessage;
     private final String errorDescription;
