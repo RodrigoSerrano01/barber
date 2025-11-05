@@ -1,11 +1,10 @@
 package br.com.v1.barber.controller;
 
 
-import br.com.v1.barber.domain.Client;
 import br.com.v1.barber.dto.clientDto.ClientCreationDto;
 import br.com.v1.barber.dto.clientDto.ClientDto;
 import br.com.v1.barber.dto.clientDto.ClientUpdateDto;
-import br.com.v1.barber.service.impl.ClientServerImpl;
+import br.com.v1.barber.service.impl.ClientServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class ClientController extends RootController{
-    private final ClientServerImpl service;
+    private final ClientServiceImpl service;
 
 
     @GetMapping(path ="/clients")

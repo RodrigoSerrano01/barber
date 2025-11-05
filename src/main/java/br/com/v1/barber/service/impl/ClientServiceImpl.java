@@ -21,7 +21,7 @@ import static br.com.v1.barber.enumerator.Error.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ClientServerImpl implements ClientService {
+public class ClientServiceImpl implements ClientService {
 
     private final ClientMapper clientMapper;
     private final ClientRepository repository;
