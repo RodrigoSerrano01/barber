@@ -1,22 +1,17 @@
 package br.com.v1.barber.service.impl;
 
 import br.com.v1.barber.domain.Appointment;
-import br.com.v1.barber.domain.Client;
 import br.com.v1.barber.dto.appointmentDto.AppointmentCreationDto;
 import br.com.v1.barber.dto.appointmentDto.AppointmentDto;
 import br.com.v1.barber.dto.appointmentDto.AppointmentUpdateDto;
 import br.com.v1.barber.dto.mapping.AppointmentMapper;
 import br.com.v1.barber.exception.handler.AppointmentNotFoundException;
-import br.com.v1.barber.exception.handler.ClientAlreadyExistsException;
 import br.com.v1.barber.repository.AppointmentRepository;
 import br.com.v1.barber.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
-
 import static br.com.v1.barber.enumerator.Error.*;
 
 @Slf4j
@@ -64,7 +59,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         final Appointment existingAppointment = this.findAppointmentById(id);
         appointmentMapper.appointmentUpdateDtoToAppointment(appointmentUpdateDto, existingAppointment);
         repository.save(existingAppointment);
-        log.info("Success updated {}");
+        log.info("Success updated ");
         return appointmentMapper.appointmentToAppointmentDto(existingAppointment);
     }
 }

@@ -46,4 +46,9 @@ public class EmployeeController extends RootController{
         return employeeServiceImpl.updateEmployee(id, employeeUpdateDto);
     }
 
+    @PutMapping("employee/{id}/update-schedule")
+    public EmployeeDto updadteEmployeeSchedule (@PathVariable String id,@Valid @RequestBody EmployeeUpdateDto employeeUpdateDto){
+        return employeeServiceImpl.updateEmployee(id, employeeUpdateDto);
+    }
+
 }

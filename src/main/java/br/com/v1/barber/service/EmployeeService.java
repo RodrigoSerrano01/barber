@@ -18,4 +18,6 @@ public interface EmployeeService {
     public EmployeeDto createEmployee(EmployeeCreationDto employeeCreationDto);
     public void deleteEmployee (String id);
     public EmployeeDto updateEmployee (String id, EmployeeUpdateDto employeeUpdateDto);
+
+    public EmployeeDto updateEmployeeSchedule (String id, EmployeeUpdateDto employeeUpdateDto);
 }

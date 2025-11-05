@@ -54,12 +54,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDto createEmployee(EmployeeCreationDto employeeCreationDto) {
         log.info("Searching employee by name",employeeCreationDto.getName());
+        employeeCreationDto.initSchedules();
         final Optional<Employee> employeeSearching = repository.findTopByNameEqualsIgnoreCase(employeeCreationDto.getName());
         if(employeeSearching.isPresent()){
             log.info(EMPLOYEE_ALREADY_REGISTERED.getErrorDescription());
             throw new EmployeeAlreadyExistsException(EMPLOYEE_ALREADY_REGISTERED.getErrorDescription());
         }
         final Employee employee = employeeMapper.employeeCreationDtoToEmployee(employeeCreationDto);
+
         repository.save(employee);
         log.info("Sucess registered{} ",employee.getName());
         return employeeMapper.employeeToEmployeeDto(employee);
@@ -78,6 +80,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.employeeUpdateDtoToEmployee(employeeUpdateDto, existingEmployee);
         repository.save(existingEmployee);
         log.info("Success updated {}",existingEmployee.getName());
+        return employeeMapper.employeeToEmployeeDto(existingEmployee);
+
+    }
+
+    @Override
+    public EmployeeDto updateEmployeeSchedule(String id, EmployeeUpdateDto employeeUpdateDto) {
+        final Employee existingEmployee = this.findEmployeeById(id);
+        employeeMapper.employeeUpdateDtoToEmployee(employeeUpdateDto, existingEmployee);
+        repository.save(existingEmployee);
+        log.info("Success updated schedule {}",existingEmployee.getName());
         return employeeMapper.employeeToEmployeeDto(existingEmployee);
 
     }
