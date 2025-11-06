@@ -2,6 +2,9 @@ package br.com.v1.barber.service.impl;
 
 import br.com.v1.barber.domain.Client;
 import br.com.v1.barber.domain.Employee;
+import br.com.v1.barber.domain.WorkSchedule;
+import br.com.v1.barber.dto.appointmentDto.AppointmentCreationDto;
+import br.com.v1.barber.dto.appointmentDto.AppointmentUpdateDto;
 import br.com.v1.barber.dto.employeeDto.EmployeeCreationDto;
 import br.com.v1.barber.dto.employeeDto.EmployeeDto;
 import br.com.v1.barber.dto.employeeDto.EmployeeUpdateDto;
@@ -117,5 +120,30 @@ public class EmployeeServiceImpl implements EmployeeService {
            });
 
     return employee;
+    }
+
+    public void updateAvailableTimeSlot (Employee employee, AppointmentCreationDto appointmentCreationDto){
+
+                employee.getWorkSchedules().stream()
+                .filter(ws -> ws.getWeekDay().equals(appointmentCreationDto.getWeekDay()))
+                .filter(WorkSchedule::getWorking)
+                .flatMap(ws -> ws.getSlots().stream())
+                .filter(slot -> slot.getTime().equals(appointmentCreationDto.getHour()) && slot.isAvailable())
+                .findFirst()
+                .ifPresent(slot -> slot.setAvailable(!slot.isAvailable()));
+
+        repository.save(employee);
+    }
+    public void updateDisableTimeSlot (Employee employee, AppointmentUpdateDto appointmentUpdateDto){
+
+        employee.getWorkSchedules().stream()
+                .filter(ws -> ws.getWeekDay().equals(appointmentUpdateDto.getWeekDay()))
+                .filter(WorkSchedule::getWorking)
+                .flatMap(ws -> ws.getSlots().stream())
+                .filter(slot -> slot.getTime().equals(appointmentUpdateDto.getHour()) && !slot.isAvailable())
+                .findFirst()
+                .ifPresent(slot -> slot.setAvailable(!slot.isAvailable()));
+
+        repository.save(employee);
     }
 }

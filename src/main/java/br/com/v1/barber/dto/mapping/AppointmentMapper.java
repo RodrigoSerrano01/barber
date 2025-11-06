@@ -22,4 +22,5 @@ public interface AppointmentMapper {
     List<AppointmentDto> appointmentListToAppointmentListDto (List<Appointment> appointmentList);
 
     void appointmentUpdateDtoToAppointment(AppointmentUpdateDto appointmentUpdateDto, @MappingTarget Appointment appointment);
+    AppointmentUpdateDto appointmentToAppointmentUpdateDto( Appointment appointment);
 }
