@@ -60,10 +60,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentDto createAppointment(AppointmentCreationDto appointmentCreationDto) {
 
 
+        final Optional<Services> service = serviceRepository.findById(appointmentCreationDto.getIdService());
 
-        if (validationHour(appointmentCreationDto)) {
+
+        if (validationHour(appointmentCreationDto) && service.isPresent()) {
+            log.info("teste {} ",service.get().getServiceTime());
+            int aux=0;
             Employee existingEmployee = employeeService.findEmployeeById(appointmentCreationDto.getIdEmployee());
-            employeeService.updateAvailableTimeSlot(existingEmployee,appointmentCreationDto);
+            do {
+                employeeService.updateAvailableTimeSlot(existingEmployee, appointmentCreationDto);
+                aux++;
+            }while(aux<service.get().getServiceTime().getValue());
             final Appointment appointment = appointmentMapper.appointmentCreationDtoToAppointment(appointmentCreationDto);
             employeeRepository.save(existingEmployee);
             repository.save(appointment);
@@ -81,13 +88,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         Optional<Employee> employee = employeeRepository.findById(appointmentCreationDto.getIdEmployee());
         Optional<Services> service = serviceRepository.findById(appointmentCreationDto.getIdService());
 
-        log.info("is {} - {} - {}",client.isPresent(), employee.isPresent(), service.isPresent());
         if(client.isPresent()&&employee.isPresent()&&service.isPresent()){
-
-            log.info("tem todos {} - {} - {}",client.get().getName(), employee.get().getName(), service.get().getName());
-
-
-            return employee.get().getWorkSchedules().stream()
+           return employee.get().getWorkSchedules().stream()
                     .filter(ws -> ws.getWeekDay().equals(appointmentCreationDto.getWeekDay()))
                     .filter(WorkSchedule::getWorking)
                     .flatMap(ws -> ws.getSlots().stream())

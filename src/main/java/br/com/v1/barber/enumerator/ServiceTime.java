@@ -2,8 +2,8 @@ package br.com.v1.barber.enumerator;
 
 public enum ServiceTime {
 
-    ONEHOUR(1),
-    HALFANHOUR(2);
+    ONEHOUR(2),
+    HALFANHOUR(1);
 
     private final int value;
 

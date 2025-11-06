@@ -2,6 +2,7 @@ package br.com.v1.barber.service.impl;
 
 import br.com.v1.barber.domain.Client;
 import br.com.v1.barber.domain.Employee;
+import br.com.v1.barber.domain.Services;
 import br.com.v1.barber.domain.WorkSchedule;
 import br.com.v1.barber.dto.appointmentDto.AppointmentCreationDto;
 import br.com.v1.barber.dto.appointmentDto.AppointmentUpdateDto;
@@ -16,6 +17,7 @@ import br.com.v1.barber.exception.handler.EmployeeNotFoundException;
 import br.com.v1.barber.exception.handler.UserNotFoundException;
 import br.com.v1.barber.repository.ClientRepository;
 import br.com.v1.barber.repository.EmployeeRepository;
+import br.com.v1.barber.repository.ServicesRepository;
 import br.com.v1.barber.service.EmployeeService;
 import br.com.v1.barber.util.ScheduleUtils;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeMapper employeeMapper;
     private final EmployeeRepository repository;
+    private final ServicesRepository serviceRepository;
 
     @Override
     public Employee findEmployeeById(String id) {
@@ -124,17 +127,34 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public void updateAvailableTimeSlot (Employee employee, AppointmentCreationDto appointmentCreationDto){
 
-                employee.getWorkSchedules().stream()
+        final Optional<Services> service = serviceRepository.findById(appointmentCreationDto.getIdService());
+
+        employee.getWorkSchedules().stream()
                 .filter(ws -> ws.getWeekDay().equals(appointmentCreationDto.getWeekDay()))
                 .filter(WorkSchedule::getWorking)
                 .flatMap(ws -> ws.getSlots().stream())
                 .filter(slot -> slot.getTime().equals(appointmentCreationDto.getHour()) && slot.isAvailable())
                 .findFirst()
-                .ifPresent(slot -> slot.setAvailable(!slot.isAvailable()));
+                .ifPresent(slot -> {
+                    slot.setAvailable(false);
+
+                    if (service.isPresent() && service.get().getServiceTime().getValue() == 2) {
+                        employee.getWorkSchedules().stream()
+                                .filter(ws -> ws.getWeekDay().equals(appointmentCreationDto.getWeekDay()))
+                                .filter(WorkSchedule::getWorking)
+                                .flatMap(ws -> ws.getSlots().stream())
+                                .filter(nextSlot -> nextSlot.getTime().isAfter(slot.getTime()))
+                                .findFirst()
+                                .ifPresent(nextSlot -> nextSlot.setAvailable(false));
+                    }
+                });
 
         repository.save(employee);
     }
     public void updateDisableTimeSlot (Employee employee, AppointmentUpdateDto appointmentUpdateDto){
+
+        Optional<Services> service = serviceRepository.findById(appointmentUpdateDto.getIdService());
+
 
         employee.getWorkSchedules().stream()
                 .filter(ws -> ws.getWeekDay().equals(appointmentUpdateDto.getWeekDay()))
@@ -142,7 +162,21 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .flatMap(ws -> ws.getSlots().stream())
                 .filter(slot -> slot.getTime().equals(appointmentUpdateDto.getHour()) && !slot.isAvailable())
                 .findFirst()
-                .ifPresent(slot -> slot.setAvailable(!slot.isAvailable()));
+                .ifPresent(slot -> {
+                    // Libera o horário atual
+                    slot.setAvailable(true);
+
+                    // Se o serviço ocupar 2 slots, libera também o próximo
+                    if (service.isPresent() && service.get().getServiceTime().getValue() == 2) {
+                        employee.getWorkSchedules().stream()
+                                .filter(ws -> ws.getWeekDay().equals(appointmentUpdateDto.getWeekDay()))
+                                .filter(WorkSchedule::getWorking)
+                                .flatMap(ws -> ws.getSlots().stream())
+                                .filter(nextSlot -> nextSlot.getTime().equals(slot.getTime().plusMinutes(30)))
+                                .findFirst()
+                                .ifPresent(nextSlot -> nextSlot.setAvailable(true));
+                    }
+                });
 
         repository.save(employee);
     }
