@@ -1,6 +1,7 @@
 package br.com.v1.barber.dto.servicesDto;
 
 
+import br.com.v1.barber.enumerator.ServiceTime;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -13,4 +14,7 @@ public class ServicesDto {
     private String name;
     @NotNull
     private Float value;
+
+    @NotNull
+    private ServiceTime serviceTime;
 }

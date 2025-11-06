@@ -65,7 +65,7 @@ public class ServicesServiceImpl implements ServicesService {
     public void deleteServices(String id) {
         final Services services = this.findServiceById(id);
         repository.deleteById(id);
-        log.info("Client {} deleted",services.getName());
+        log.info("service {} deleted",services.getName());
     }
 
     @Override

@@ -44,7 +44,7 @@ public class ClientServiceImpl implements ClientService {
     }
     @Override
     public ClientDto createClient(ClientCreationDto clientCreationDto) {
-        log.info("Searching client by name",clientCreationDto.getName());
+        log.info("Searching client by name {} ",clientCreationDto.getName());
 
         final Optional<Client> clientSearching = repository.findTopByNameEqualsIgnoreCase(clientCreationDto.getName());
         if(clientSearching.isPresent()){

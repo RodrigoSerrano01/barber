@@ -1,6 +1,7 @@
 package br.com.v1.barber.dto.servicesDto;
 
 
+import br.com.v1.barber.enumerator.ServiceTime;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,4 +19,9 @@ public class ServicesCreationDto {
     private String name;
     @NotNull
     private Float value;
+
+    @NotNull
+    private ServiceTime serviceTime;
+
+
 }

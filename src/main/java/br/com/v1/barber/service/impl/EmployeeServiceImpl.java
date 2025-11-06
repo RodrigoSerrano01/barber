@@ -14,6 +14,7 @@ import br.com.v1.barber.exception.handler.UserNotFoundException;
 import br.com.v1.barber.repository.ClientRepository;
 import br.com.v1.barber.repository.EmployeeRepository;
 import br.com.v1.barber.service.EmployeeService;
+import br.com.v1.barber.util.ScheduleUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto createEmployee(EmployeeCreationDto employeeCreationDto) {
-        log.info("Searching employee by name",employeeCreationDto.getName());
+        log.info("Searching employee by name {}",employeeCreationDto.getName());
         employeeCreationDto.initSchedules();
         final Optional<Employee> employeeSearching = repository.findTopByNameEqualsIgnoreCase(employeeCreationDto.getName());
         if(employeeSearching.isPresent()){
@@ -76,8 +77,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto updateEmployee(String id, EmployeeUpdateDto employeeUpdateDto) {
-        final Employee existingEmployee = this.findEmployeeById(id);
+         Employee existingEmployee = this.findEmployeeById(id);
         employeeMapper.employeeUpdateDtoToEmployee(employeeUpdateDto, existingEmployee);
+        existingEmployee = createTimeSlots(existingEmployee);
         repository.save(existingEmployee);
         log.info("Success updated {}",existingEmployee.getName());
         return employeeMapper.employeeToEmployeeDto(existingEmployee);
@@ -86,11 +88,34 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto updateEmployeeSchedule(String id, EmployeeUpdateDto employeeUpdateDto) {
-        final Employee existingEmployee = this.findEmployeeById(id);
+         Employee existingEmployee = this.findEmployeeById(id);
+
         employeeMapper.employeeUpdateDtoToEmployee(employeeUpdateDto, existingEmployee);
+
+
         repository.save(existingEmployee);
         log.info("Success updated schedule {}",existingEmployee.getName());
         return employeeMapper.employeeToEmployeeDto(existingEmployee);
 
+    }
+
+
+    /**
+     *
+     * @param employee
+     *
+     * create a list of 30min slots for everyday available for work
+     *
+     * @return
+     */
+
+    public Employee createTimeSlots(Employee employee){
+
+    employee.getWorkSchedules().forEach(workSchedule -> {
+            if (workSchedule.getWorking())
+                workSchedule.setSlots(ScheduleUtils.generateHalfHourSlots(workSchedule.getStartTime(), workSchedule.getEndTime()));
+           });
+
+    return employee;
     }
 }
