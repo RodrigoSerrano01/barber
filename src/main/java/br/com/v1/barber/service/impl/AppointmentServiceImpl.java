@@ -10,6 +10,7 @@ import br.com.v1.barber.dto.mapping.AppointmentMapper;
 import br.com.v1.barber.dto.mapping.EmployeeMapper;
 import br.com.v1.barber.enumerator.WeekDay;
 import br.com.v1.barber.exception.handler.AppointmentNotFoundException;
+import br.com.v1.barber.exception.handler.TimeNotAvailableException;
 import br.com.v1.barber.repository.AppointmentRepository;
 import br.com.v1.barber.repository.ClientRepository;
 import br.com.v1.barber.repository.EmployeeRepository;
@@ -64,13 +65,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
         if (validationHour(appointmentCreationDto) && service.isPresent()) {
-            log.info("teste {} ",service.get().getServiceTime());
-            int aux=0;
+
             Employee existingEmployee = employeeService.findEmployeeById(appointmentCreationDto.getIdEmployee());
-            do {
                 employeeService.updateAvailableTimeSlot(existingEmployee, appointmentCreationDto);
-                aux++;
-            }while(aux<service.get().getServiceTime().getValue());
             final Appointment appointment = appointmentMapper.appointmentCreationDtoToAppointment(appointmentCreationDto);
             employeeRepository.save(existingEmployee);
             repository.save(appointment);
@@ -78,8 +75,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             log.info("Sucess registered ");
             return appointmentMapper.appointmentToAppointmentDto(appointment);
         }
-        log.info((NO_APPOINTMENT_FOUND.getErrorDescription()));
-        throw new AppointmentNotFoundException(NO_APPOINTMENT_FOUND.getErrorDescription());
+        log.info((APPOINTMENT_NOT_REGISTERED.getErrorDescription()));
+        throw new AppointmentNotFoundException(APPOINTMENT_NOT_REGISTERED.getErrorDescription());
     }
 
     public Boolean validationHour (AppointmentCreationDto appointmentCreationDto){
@@ -95,8 +92,10 @@ public class AppointmentServiceImpl implements AppointmentService {
                     .flatMap(ws -> ws.getSlots().stream())
                     .anyMatch(slot -> slot.getTime().equals(appointmentCreationDto.getHour()) && slot.isAvailable());
         }
-        log.info((NO_APPOINTMENT_FOUND.getErrorDescription()));
-        throw new AppointmentNotFoundException(NO_APPOINTMENT_FOUND.getErrorDescription());
+
+        //refatorar
+        log.info((TIME_NOT_AVAILABLE.getErrorDescription()));
+        throw new TimeNotAvailableException(TIME_NOT_AVAILABLE.getErrorDescription());
 
     }
 

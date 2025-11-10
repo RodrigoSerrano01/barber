@@ -1,6 +1,9 @@
 package br.com.v1.barber.dto.userDto;
 
+import br.com.v1.barber.enumerator.UserRole;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
@@ -16,6 +19,11 @@ public abstract class UserDto {
     private String CPF;
     @NotBlank
     private String phone;
-    @NotBlank
+    @Email
     private String email;
+    @NotBlank
+    @Size(max =50)
+    private String password;
+    @NotBlank
+    private UserRole userRole;
 }

@@ -26,6 +26,7 @@ public class ClientServiceImpl implements ClientService {
     private final ClientMapper clientMapper;
     private final ClientRepository repository;
 
+
     public Client findClientById(String id){
         log.info("Searching client by id {}",id);
         return repository.findById(id)

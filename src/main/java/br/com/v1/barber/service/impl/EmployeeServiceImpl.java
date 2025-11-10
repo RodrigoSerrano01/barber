@@ -137,7 +137,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .findFirst()
                 .ifPresent(slot -> {
                     slot.setAvailable(false);
-
+log.info("teste {} ",service.get().getServiceTime().getValue());
                     if (service.isPresent() && service.get().getServiceTime().getValue() == 2) {
                         employee.getWorkSchedules().stream()
                                 .filter(ws -> ws.getWeekDay().equals(appointmentCreationDto.getWeekDay()))
