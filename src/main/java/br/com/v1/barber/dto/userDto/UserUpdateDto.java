@@ -1,6 +1,7 @@
 package br.com.v1.barber.dto.userDto;
 
 import br.com.v1.barber.enumerator.UserRole;
+import br.com.v1.barber.validation.DateDDMMYYYY;
 import br.com.v1.barber.validation.Phone;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -32,9 +33,8 @@ public class UserUpdateDto {
     @NotBlank(message = "Email cannot be blank")
     @Email
     private String email;
-    @NotBlank
-    @Size(max =50)
+
     private String password;
-    @NotBlank
+
     private UserRole userRole;
 }

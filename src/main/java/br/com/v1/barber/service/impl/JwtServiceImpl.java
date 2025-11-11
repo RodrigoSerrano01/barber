@@ -1,43 +1,41 @@
 package br.com.v1.barber.service.impl;
 
 import br.com.v1.barber.domain.User;
-import br.com.v1.barber.dto.userDto.UserCreationDto;
+import br.com.v1.barber.dto.userDto.UserDto;
 import br.com.v1.barber.repository.UserRepository;
-import br.com.v1.barber.service.JwtService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.Jwts;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import static javax.crypto.Cipher.SECRET_KEY;
 
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class  JwtServiceImpl implements JwtService {
-    private final UserRepository repository;
-    private static final String SECRET_KEY = "Secret key";
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
+public class JwtServiceImpl implements UserDetailsService {
+
+    private final UserRepository userRepository;
+    private static final String SECRET_KEY = "uma-chave-muito-segura-com-mais-de-32-bytes-para-hs256";
 
 
-    private Key getSignKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-    }
 
     public User register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -52,18 +50,32 @@ public class  JwtServiceImpl implements JwtService {
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+    private Key getSignKey() {
+        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    }
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email);
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                getAuthorities(user));
     }
 
-    public boolean isTokenValid(String token, String username) {
-        return username.equals(extractUsername(token)) && !isTokenExpired(token);
+    private Collection<? extends GrantedAuthority> getAuthorities(User user) {
+        // Aqui você pode mapear roles ou perfis do usuário
+        // Exemplo simples: todos usuários têm ROLE_USER
+        return List.of(new SimpleGrantedAuthority("ROLE_CLIENT"));
     }
+
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
+    }
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
     private Claims extractAllClaims(String token) {
@@ -73,6 +85,7 @@ public class  JwtServiceImpl implements JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
     public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
@@ -80,4 +93,8 @@ public class  JwtServiceImpl implements JwtService {
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+    public boolean isTokenValid(String token, String username) {
+        return username.equals(extractUsername(token)) && !isTokenExpired(token);
+    }
+
 }

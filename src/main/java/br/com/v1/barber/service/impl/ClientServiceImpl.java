@@ -11,6 +11,8 @@ import br.com.v1.barber.repository.ClientRepository;
 import br.com.v1.barber.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +27,7 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientMapper clientMapper;
     private final ClientRepository repository;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
 
     public Client findClientById(String id){
@@ -53,6 +56,7 @@ public class ClientServiceImpl implements ClientService {
             throw new ClientAlreadyExistsException(CLIENT_ALREADY_REGISTERED.getErrorDescription());
         }
         final Client client = clientMapper.clientCreationDtoToClient(clientCreationDto);
+        client.setPassword(encoder.encode(client.getPassword()));
         repository.save(client);
         log.info("Sucess registered{} ",client.getName());
         return clientMapper.clientToClientDto(client);

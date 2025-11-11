@@ -1,8 +1,11 @@
 package br.com.v1.barber.controller;
 
 import br.com.v1.barber.domain.User;
+<<<<<<< HEAD
 import br.com.v1.barber.dto.authDto.AuthRequest;
 import br.com.v1.barber.dto.authDto.AuthResponse;
+=======
+>>>>>>> e159906 (password encoder)
 import br.com.v1.barber.repository.UserRepository;
 import br.com.v1.barber.service.impl.JwtServiceImpl;
 import lombok.RequiredArgsConstructor;
