@@ -5,6 +5,7 @@ import br.com.v1.barber.dto.userDto.UserCreationDto;
 import br.com.v1.barber.enumerator.WeekDay;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.DayOfWeek;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class EmployeeCreationDto extends UserCreationDto {
 
     private List<WorkSchedule> workSchedules;

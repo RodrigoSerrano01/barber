@@ -14,9 +14,7 @@ import org.hibernate.validator.constraints.br.CPF;
 
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public abstract class UserCreationDto {
+public class UserCreationDto {
     @NotBlank
     @Size(min = 3, max = 20)
     private String name;

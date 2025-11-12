@@ -6,11 +6,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Data
 @NoArgsConstructor
 //@Document(collection = "user")
-public abstract class User {
+public abstract class User  {
     @NotBlank
     private String name;
     @NotBlank

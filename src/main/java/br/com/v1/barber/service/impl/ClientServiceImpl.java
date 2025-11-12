@@ -9,6 +9,7 @@ import br.com.v1.barber.exception.handler.ClientAlreadyExistsException;
 import br.com.v1.barber.exception.handler.UserNotFoundException;
 import br.com.v1.barber.repository.ClientRepository;
 import br.com.v1.barber.service.ClientService;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,6 +24,7 @@ import static br.com.v1.barber.enumerator.Error.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+
 public class ClientServiceImpl implements ClientService {
 
     private final ClientMapper clientMapper;
@@ -57,6 +59,7 @@ public class ClientServiceImpl implements ClientService {
         }
         final Client client = clientMapper.clientCreationDtoToClient(clientCreationDto);
         client.setPassword(encoder.encode(client.getPassword()));
+
         repository.save(client);
         log.info("Sucess registered{} ",client.getName());
         return clientMapper.clientToClientDto(client);
@@ -76,4 +79,10 @@ public class ClientServiceImpl implements ClientService {
         log.info("Success updated {}",existingClient.getName());
         return clientMapper.clientToClientDto(existingClient);
     }
+
+    public Client findByEmail(String email) {
+        return repository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+    }
 }
+

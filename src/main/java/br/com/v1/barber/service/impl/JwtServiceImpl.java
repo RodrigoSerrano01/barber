@@ -1,10 +1,15 @@
 package br.com.v1.barber.service.impl;
 
+import br.com.v1.barber.domain.Client;
 import br.com.v1.barber.domain.User;
+import br.com.v1.barber.dto.clientDto.ClientDto;
+import br.com.v1.barber.dto.employeeDto.EmployeeDto;
 import br.com.v1.barber.dto.userDto.UserDto;
+import br.com.v1.barber.repository.ClientRepository;
 import br.com.v1.barber.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +19,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import static javax.crypto.Cipher.SECRET_KEY;
@@ -33,14 +36,21 @@ import static javax.crypto.Cipher.SECRET_KEY;
 public class JwtServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private static final String SECRET_KEY = "uma-chave-muito-segura-com-mais-de-32-bytes-para-hs256";
+    private final ClientRepository clientRepository;
+    private static final String SECRET_KEY = "bj2jCzzpG8tGJhSdJ13v8I3R8fwCW6NyqmPOcWqMV/Y=";
+
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
 
 
-    public User register(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return repository.save(user);
+    public void register(User user) {
+        user.setPassword(encoder.encode(user.getPassword()));
+        log.info("teste {} ", user.getUserRole());
+        userRepository.save(user);
+        log.info("Sucess registered {} ",user.getName());
     }
+
+
     public String generateToken(Map<String, Object> extraClaims, String subject) {
         return Jwts.builder()
                 .setClaims(extraClaims)
@@ -50,18 +60,35 @@ public class JwtServiceImpl implements UserDetailsService {
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+    public String generateTokenToClient(ClientDto clientDetails) {
+        return generateToken(new HashMap<>(), clientDetails.getEmail());
+    }
+    public String generateTokenToEmployee(EmployeeDto employeeDto) {
+        return generateToken(new HashMap<>(), employeeDto.getEmail());
+    }
     private Key getSignKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
-
+        Client client = clientRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Cliente não encontrado"));
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                getAuthorities(user));
+                client.getEmail(),
+                client.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_CLIENT"))
+        );
     }
+
+//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+//        User user = userRepository.findByEmail(email);
+//
+//        return new org.springframework.security.core.userdetails.User(
+//                user.getEmail(),
+//                user.getPassword(),
+//                getAuthorities(user));
+//    }
 
     private Collection<? extends GrantedAuthority> getAuthorities(User user) {
         // Aqui você pode mapear roles ou perfis do usuário
