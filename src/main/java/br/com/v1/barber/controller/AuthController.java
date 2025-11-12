@@ -105,21 +105,28 @@ public class AuthController {
     public ResponseEntity<Map<String, String>> login(@RequestBody AuthRequest request) {
         System.out.println(request.getEmail());
         Client client = clientService.findByEmail(request.getEmail());
+
         System.out.println(client.getEmail());
+
+        if (passwordEncoder.matches(request.getPassword(), client.getPassword())) {
+            ClientDto clientDto = clientMapper.clientToClientDto(client);
+            String token = jwtService.generateTokenToClient(clientDto);
+            System.out.println(token);
+            return ResponseEntity.ok(Map.of("token", token));
+        }
+
+            throw new RuntimeException("Invalid credentials");
+
 //        authenticationManager.authenticate(
 //                new UsernamePasswordAuthenticationToken(
 //                        client.getEmail(),
 //                        client.getPassword()
 //                )
 //       );
-        System.out.println(request.getEmail());
-        //UserDetails userDetails = jwtService.loadUserByUsername(request.getEmail());
-       // Client client = clientRepository.findTopByEmailEqualsIgnoreCase(request.getEmail()).orElseThrow();
-        ClientDto clientDto = clientMapper.clientToClientDto(client);
-        String token = jwtService.generateTokenToClient(clientDto);
-        System.out.println(token);
-        return ResponseEntity.ok(Map.of("token", token));
+
+//        return ResponseEntity.ok(Map.of("Erro",erro));
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody JsonNode json) {
