@@ -60,16 +60,21 @@ package br.com.v1.barber.controller;
 //}
 
 import br.com.v1.barber.domain.Client;
+import br.com.v1.barber.domain.Employee;
+import br.com.v1.barber.domain.User;
 import br.com.v1.barber.dto.authDto.AuthRequest;
 import br.com.v1.barber.dto.clientDto.ClientCreationDto;
 import br.com.v1.barber.dto.clientDto.ClientDto;
 import br.com.v1.barber.dto.employeeDto.EmployeeCreationDto;
+import br.com.v1.barber.dto.employeeDto.EmployeeDto;
 import br.com.v1.barber.dto.mapping.ClientMapper;
+import br.com.v1.barber.dto.mapping.EmployeeMapper;
 import br.com.v1.barber.dto.mapping.UserMapper;
 import br.com.v1.barber.repository.ClientRepository;
 import br.com.v1.barber.service.impl.ClientServiceImpl;
 import br.com.v1.barber.service.impl.EmployeeServiceImpl;
 import br.com.v1.barber.service.impl.JwtServiceImpl;
+import br.com.v1.barber.service.impl.UserServiceImpl;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,26 +101,48 @@ public class AuthController {
     private final ClientServiceImpl clientService;
     private final EmployeeServiceImpl employeeService;
     private final PasswordEncoder passwordEncoder;
+    private final UserServiceImpl userService;
 
 
     private final UserMapper userMapper;
     private final ClientMapper clientMapper;
+    private final EmployeeMapper employeeMapper;
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody AuthRequest request) {
-        System.out.println(request.getEmail());
+//        System.out.println(request.getEmail());
+//        User user = userService.findByEmail(request.getEmail());
+//        System.out.println(user.getEmail());
+
+//        System.out.println(client.getEmail());
+switch (request.getUserRole()) {
+    case ROLE_CLIENT -> {
         Client client = clientService.findByEmail(request.getEmail());
-
-        System.out.println(client.getEmail());
-
         if (passwordEncoder.matches(request.getPassword(), client.getPassword())) {
             ClientDto clientDto = clientMapper.clientToClientDto(client);
             String token = jwtService.generateTokenToClient(clientDto);
             System.out.println(token);
             return ResponseEntity.ok(Map.of("token", token));
-        }
 
-            throw new RuntimeException("Invalid credentials");
+        }
+        throw new RuntimeException("Invalid credentials");
+    }
+    case ROLE_EMPLOYEE -> {
+        Employee employee = employeeService.findByEmail(request.getEmail());
+        if (passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
+            EmployeeDto employeeDto = employeeMapper.employeeToEmployeeDto(employee);
+            String token = jwtService.generateTokenToEmployee(employeeDto);
+            System.out.println(token);
+            return ResponseEntity.ok(Map.of("token", token));
+
+
+        }
+        throw new RuntimeException("Invalid credentials");
+    }
+}
+
+
+
 
 //        authenticationManager.authenticate(
 //                new UsernamePasswordAuthenticationToken(
@@ -125,7 +152,9 @@ public class AuthController {
 //       );
 
 //        return ResponseEntity.ok(Map.of("Erro",erro));
+        throw new RuntimeException("ERROR");
     }
+
 
 
     @PostMapping("/register")

@@ -14,6 +14,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,7 +38,8 @@ public class JwtServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
-    private static final String SECRET_KEY = "bj2jCzzpG8tGJhSdJ13v8I3R8fwCW6NyqmPOcWqMV/Y=";
+    @Value("${app.jwt.secret}")
+    private String SECRET_KEY;
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 

@@ -22,6 +22,7 @@ import br.com.v1.barber.service.EmployeeService;
 import br.com.v1.barber.util.ScheduleUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeMapper employeeMapper;
     private final EmployeeRepository repository;
     private final ServicesRepository serviceRepository;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     @Override
     public Employee findEmployeeById(String id) {
@@ -67,6 +69,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             log.info(EMPLOYEE_ALREADY_REGISTERED.getErrorDescription());
             throw new EmployeeAlreadyExistsException(EMPLOYEE_ALREADY_REGISTERED.getErrorDescription());
         }
+        employeeCreationDto.setPassword(encoder.encode(employeeCreationDto.getPassword()));
         final Employee employee = employeeMapper.employeeCreationDtoToEmployee(employeeCreationDto);
 
         repository.save(employee);
@@ -179,5 +182,10 @@ log.info("teste {} ",service.get().getServiceTime().getValue());
                 });
 
         repository.save(employee);
+    }
+
+    public Employee findByEmail(String email) {
+        return repository.findByEmail(email);
+
     }
 }
