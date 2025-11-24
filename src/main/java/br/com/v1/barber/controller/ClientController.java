@@ -1,6 +1,7 @@
 package br.com.v1.barber.controller;
 
 
+import br.com.v1.barber.domain.Client;
 import br.com.v1.barber.dto.clientDto.ClientCreationDto;
 import br.com.v1.barber.dto.clientDto.ClientDto;
 import br.com.v1.barber.dto.clientDto.ClientUpdateDto;
@@ -40,6 +41,12 @@ public class ClientController extends RootController{
     @PutMapping("clients/{id}/update")
     public ClientDto updadteClient ( @PathVariable String id,@Valid @RequestBody ClientUpdateDto updatedClient){
         return service.updateClient(id, updatedClient);
+    }
+
+    @GetMapping("clients/{id}/find")
+    @ResponseStatus(HttpStatus.OK)
+    public Client findClient (@PathVariable String id){
+        return service.findClientById(id);
     }
 
 }

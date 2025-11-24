@@ -122,7 +122,13 @@ switch (request.getUserRole()) {
             ClientDto clientDto = clientMapper.clientToClientDto(client);
             String token = jwtService.generateTokenToClient(clientDto);
             System.out.println(token);
-            return ResponseEntity.ok(Map.of("token", token));
+            return ResponseEntity.ok(
+                    Map.of(
+                            "token", token,
+                            "id", client.getId(),      // adiciona o ID
+                            "name", client.getName()   // opcional, se quiser mostrar na Home
+                    )
+            );
 
         }
         throw new RuntimeException("Invalid credentials");
@@ -133,7 +139,13 @@ switch (request.getUserRole()) {
             EmployeeDto employeeDto = employeeMapper.employeeToEmployeeDto(employee);
             String token = jwtService.generateTokenToEmployee(employeeDto);
             System.out.println(token);
-            return ResponseEntity.ok(Map.of("token", token));
+            return ResponseEntity.ok(
+                    Map.of(
+                            "token", token,
+                            "id", employee.getId(),      // adiciona o ID
+                            "name", employee.getName()   // opcional, se quiser mostrar na Home
+                    )
+            );
 
 
         }

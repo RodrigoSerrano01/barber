@@ -23,6 +23,6 @@ public class WorkSchedule {
         this.weekDay = weekDay;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.working = false;
+        this.working = true;
     }
 }
