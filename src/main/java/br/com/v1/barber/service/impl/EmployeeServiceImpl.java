@@ -188,4 +188,5 @@ log.info("teste {} ",service.get().getServiceTime().getValue());
         return repository.findByEmail(email);
 
     }
+
 }

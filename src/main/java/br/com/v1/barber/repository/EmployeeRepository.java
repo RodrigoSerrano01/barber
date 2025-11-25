@@ -12,4 +12,6 @@ public interface EmployeeRepository extends MongoRepository< Employee, String> {
     Optional<Employee> findTopByNameEqualsIgnoreCase(String name);
 
     public Employee findByEmail(String email);
+
+    Optional<Employee> findByEmailIgnoreCase(String email);
 }

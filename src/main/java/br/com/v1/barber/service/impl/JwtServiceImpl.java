@@ -1,11 +1,13 @@
 package br.com.v1.barber.service.impl;
 
 import br.com.v1.barber.domain.Client;
+import br.com.v1.barber.domain.Employee;
 import br.com.v1.barber.domain.User;
 import br.com.v1.barber.dto.clientDto.ClientDto;
 import br.com.v1.barber.dto.employeeDto.EmployeeDto;
 import br.com.v1.barber.dto.userDto.UserDto;
 import br.com.v1.barber.repository.ClientRepository;
+import br.com.v1.barber.repository.EmployeeRepository;
 import br.com.v1.barber.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -38,6 +40,7 @@ public class JwtServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
+    private final EmployeeRepository employeeRepository;
     @Value("${app.jwt.secret}")
     private String SECRET_KEY;
 
@@ -74,14 +77,42 @@ public class JwtServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Client client = clientRepository.findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Cliente não encontrado"));
-        return new org.springframework.security.core.userdetails.User(
-                client.getEmail(),
-                client.getPassword(),
-                List.of(new SimpleGrantedAuthority("ROLE_CLIENT"))
-        );
+        // Primeiro tenta achar como cliente
+        Optional<Client> clientOpt = clientRepository.findByEmailIgnoreCase(email);
+        if (clientOpt.isPresent()) {
+            Client client = clientOpt.get();
+            return new org.springframework.security.core.userdetails.User(
+                    client.getEmail(),
+                    client.getPassword(),
+                    List.of(new SimpleGrantedAuthority("ROLE_CLIENT"))
+            );
+        }
+
+        // Se não achou como cliente, tenta achar como employee
+        Optional<Employee> employeeOpt = employeeRepository.findByEmailIgnoreCase(email);
+        if (employeeOpt.isPresent()) {
+            Employee employee = employeeOpt.get();
+            return new org.springframework.security.core.userdetails.User(
+                    employee.getEmail(),
+                    employee.getPassword(),
+                    List.of(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))
+            );
+        }
+
+        // Se não achou nenhum dos dois
+        throw new UsernameNotFoundException("Usuário não encontrado");
     }
+
+//    @Override
+//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+//        Client client = clientRepository.findByEmailIgnoreCase(email)
+//                .orElseThrow(() -> new UsernameNotFoundException("Cliente não encontrado"));
+//        return new org.springframework.security.core.userdetails.User(
+//                client.getEmail(),
+//                client.getPassword(),
+//                List.of(new SimpleGrantedAuthority("ROLE_CLIENT"))
+//        );
+//    }
 
 //    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 //        User user = userRepository.findByEmail(email);

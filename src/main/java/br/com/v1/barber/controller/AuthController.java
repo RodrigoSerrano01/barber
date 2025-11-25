@@ -126,7 +126,8 @@ switch (request.getUserRole()) {
                     Map.of(
                             "token", token,
                             "id", client.getId(),      // adiciona o ID
-                            "name", client.getName()   // opcional, se quiser mostrar na Home
+                            "name", client.getName(),   // opcional, se quiser mostrar na Home
+                            "userRole", client.getUserRole().toString()
                     )
             );
 
@@ -143,7 +144,8 @@ switch (request.getUserRole()) {
                     Map.of(
                             "token", token,
                             "id", employee.getId(),      // adiciona o ID
-                            "name", employee.getName()   // opcional, se quiser mostrar na Home
+                            "name", employee.getName(),   // opcional, se quiser mostrar na Home
+                            "userRole", employee.getUserRole().toString()
                     )
             );
 

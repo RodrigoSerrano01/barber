@@ -1,6 +1,8 @@
 package br.com.v1.barber.controller;
 
 
+import br.com.v1.barber.domain.Client;
+import br.com.v1.barber.domain.Employee;
 import br.com.v1.barber.dto.clientDto.ClientCreationDto;
 import br.com.v1.barber.dto.clientDto.ClientDto;
 import br.com.v1.barber.dto.clientDto.ClientUpdateDto;
@@ -49,6 +51,12 @@ public class EmployeeController extends RootController{
     @PutMapping("employee/{id}/update-schedule")
     public EmployeeDto updadteEmployeeSchedule (@PathVariable String id,@Valid @RequestBody EmployeeUpdateDto employeeUpdateDto){
         return employeeServiceImpl.updateEmployee(id, employeeUpdateDto);
+    }
+
+    @GetMapping(path ="employee/{id}/find")
+    @ResponseStatus(HttpStatus.OK)
+    public Employee findEmployee (@PathVariable String id){
+        return employeeServiceImpl.findEmployeeById(id);
     }
 
 }
