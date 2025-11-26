@@ -6,11 +6,14 @@ import br.com.v1.barber.enumerator.WeekDay;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.DayOfWeek;
 import java.util.List;
 
 @Data
+@NoArgsConstructor // gera construtor vazio
+@AllArgsConstructor
 public class EmployeeDto extends UserDto {
 
     private List<WorkSchedule> workSchedules;
